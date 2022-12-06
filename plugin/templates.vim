@@ -40,6 +40,10 @@ function <SID>PrepareCamelClass(str)
     return substitute(substitute(a:str, '\(^\|_\)\(\a\)', '\1\U\2', 'g'), '_', '', 'g')
 endfunction
 
+function <SID>PreparePackage(str)
+    return substitute(substitute(a:str, '.\+java\/\(.\+\)', '\1;', ''), '\/', '\.', 'g')
+endfunction
+
 function <SID>PrepareSnakeClass(str)
     return substitute(substitute(a:str, '^\(\u\)', '\l\1', ''), '\(\u\)', '_\l\1', 'g')
 endfunction
@@ -169,12 +173,14 @@ function <SID>ExpandLanguageTemplates()
     let l:macro_guard = <SID>PrepareMacro(expand('%:t'))
     let l:macro_guard_full = <SID>PrepareMacro(@%)
     let l:filename = expand("%:t:r")
+    let l:package = <SID>PreparePackage( expand('%:p:h') )
     let l:camelclass = <SID>PrepareCamelClass(l:filename)
 	let l:snakeclass = <SID>PrepareSnakeClass(l:filename)
 
     call <SID>ExpandTemplate('MACRO_GUARD', l:macro_guard)
     call <SID>ExpandTemplate('MACRO_GUARD_FULL', l:macro_guard_full)
     call <SID>ExpandTemplate('CLASS', l:filename)
+    call <SID>ExpandTemplate('PACKAGE', l:package)
     call <SID>ExpandTemplate('CAMEL_CLASS', l:camelclass)
     call <SID>ExpandTemplate('SNAKE_CLASS', l:snakeclass)
 endfunction
